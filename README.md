@@ -1,4 +1,4 @@
-<h1 align=center>Lua-Grid</h1>
+<h1 align=center>grid.lua</h1>
 <h3 align=center>An abstract grid class for Lua 📔</h3>
 
 # Example
@@ -20,7 +20,7 @@ print(grid:get_cell(7, 3))
 If you are using [luarocks](https://luarocks.org), just run:
 
 ```
-luarocks install emoji
+luarocks install grid
 ```
 
 ## Manual
