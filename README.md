@@ -217,7 +217,7 @@ Install busted & luacheck `luarocks install busted && luarocks install luacheck`
 
 ```
 $ busted
-$ luacheck emoji.lua
+$ luacheck grid.lua
 ```
 
 # License
