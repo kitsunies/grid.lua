@@ -1,4 +1,4 @@
-<h1 align=center>grid.lua</h1>
+<h1 align=center>grid.lua 📊</h1>
 
 <p align="center">
     <a href="https://travis-ci.org/kitsunies/grid.lua"> <img src="https://travis-ci.org/kitsunies/grid.lua.svg?branch=master"> </a>
