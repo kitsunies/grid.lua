@@ -47,7 +47,7 @@ describe("Grid", function()
 
         it("lock", function()
             g:lock()
-            assert.has_error(g:set_cell(11, 9, "DATA"), "Grid is locked, execute Grid.unlock to unlock")
+            assert.has_error(function() g:set_cell(11, 9) end, "Grid is locked, execute Grid.unlock to unlock")
             assert.are.same(true, g._locked)
         end)
 
