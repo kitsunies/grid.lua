@@ -54,11 +54,7 @@ Returns:
 ---
 **`:iterate()`**
 Iterator to traverse all cells from Grid 
-```lua
-for x, y, cell in grid:iterate() do
-    print(x, y, cell)
-end
-```
+
 Returns:
 * `(number)` - X position of cell
 * `(number)` - Y position of cell
