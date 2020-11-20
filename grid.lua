@@ -174,7 +174,7 @@ end
 function Grid:get_contents(no_default)
     local data = {}
     for x, y, v in self:iterate() do
-        if not no_default and v == self.default then
+        if not (no_default and v == self.default) then
             table.insert(data, {x, y, v})
         end
     end
