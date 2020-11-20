@@ -11,7 +11,7 @@ local Grid = {
     }
 }
 
-table.unpack = unpack or table.unpack
+local unpack = unpack or table.unpack
 
 function Grid:new(size_x, size_y, default)
     if type(size_x) ~= 'number' or type(size_y) ~= 'number' or size_x < 1 or size_y < 1 then
@@ -32,11 +32,11 @@ end
 
 function Grid:lock()
     self._locked = true
- end
+end
  
- function Grid:unlock()
+function Grid:unlock()
     self._locked = false
- end
+end
 
 function Grid:get_size()
     return self.size_x, self.size_y
@@ -65,7 +65,8 @@ end
 
 function Grid:iterate_neighbor(x, y)
     if not self:is_valid(x, y) then
-        error('Grid.iterate_neighbor: try to iterate around invalid cell index [ '..tostring(x)..' : '..tostring(y)..']')
+        error('Grid.iterate_neighbor: try to iterate around invalid cell index' 
+            ..' [ '..tostring(x)..' : '..tostring(y)..' ]')
     end
     local iterate_table = {}
     for _, v in pairs(Grid.direction) do
@@ -106,7 +107,8 @@ function Grid:get_cell(x, y)
     if self:is_valid(x, y) then
         return self._grid[(x - 1) * self.size_x + y]
     else
-        error('Grid.get_cell: try to get cell by invalid index [ '..tostring(x)..' : '..tostring(y)..']')
+        error('Grid.get_cell: try to get cell by invalid index'
+            ..' [ '..tostring(x)..' : '..tostring(y)..' ]')
     end
 end
 
@@ -116,23 +118,27 @@ function Grid:get_cells(cells)
         error('Grid.get_cells: invalid cells data - must be a table value, but actual is '..type(cells))
     end
     for i = 1, #cells do
-        local x, y = table.unpack(cells[i])
+        local x, y = unpack(cells[i])
 
         if self:is_valid(x, y) then
             table.insert(data, self:get_cell(x, y))
         else
-            error('Grid.get_cells: try to get cell by invalid index [ '..tostring(x)..' : '..tostring(y)..']')
+            error('Grid.get_cells: try to get cell by invalid index'
+                ..' [ '..tostring(x)..' : '..tostring(y)..' ]')
         end
     end
     return data
 end
 
 function Grid:set_cell(x, y, obj)
-    if self._locked then return self:error() end
+    if self._locked then
+        error('Grid is locked, execute Grid.unlock to unlock')
+    end
     if self:is_valid(x, y) then
         self._grid[(x - 1) * self.size_x + y] = obj
     else
-        error('Grid.set_cell: try to set cell by invalid index [ '..tostring(x)..' : '..tostring(y)..']')
+        error('Grid.set_cell: try to set cell by invalid index'
+            ..' [ '..tostring(x)..' : '..tostring(y)..' ]')
     end
 end
 
@@ -140,7 +146,8 @@ function Grid:reset_cell(x, y)
     if self:is_valid(x, y) then
         self:set_cell(x, y, self.default)
     else
-        error('Grid.reset_cell: try to reset cell by invalid index [ '..tostring(x)..' : '..tostring(y)..']')
+        error('Grid.reset_cell: try to reset cell by invalid index'
+            ..' [ '..tostring(x)..' : '..tostring(y)..' ]')
     end
 end
 
@@ -155,7 +162,7 @@ function Grid:populate(data)
         error('Grid.populate: invalid input data - must be a table value, but actual '..type(data))
     end
     for i = 1, #data do
-        local x, y, obj = table.unpack(data[i])
+        local x, y, obj = unpack(data[i])
         if self:is_valid(x, y) then
             if not obj then
                 obj = self.default
@@ -168,7 +175,7 @@ end
 function Grid:get_contents(no_default)
     local data = {}
     for x, y, v in self:iterate() do
-        if not no_default and val == self.default then
+        if not no_default and v == self.default then
             table.insert(data, {x, y, v})
         end
     end
@@ -176,7 +183,7 @@ function Grid:get_contents(no_default)
 end
 
 function Grid:get_neighbor(x, y, vector)
-    local vx, vy, obj = table.unpack(vector)
+    local vx, vy, obj = unpack(vector)
     if vx then
         x = x + vx
         y = y + vy
@@ -231,7 +238,7 @@ function Grid:get_row(y)
             table.insert(row, self:get_cell(x, y))
         end
     else
-        self:error(y)
+        error("Grid.get_row: invalid row index " .. tostring(y))
     end
     return row
 end
@@ -251,7 +258,7 @@ end
 function Grid:traverse(x, y, v)
     local data, gx, gy, vx, vy = {}
     if self:is_valid(x, y) then
-        vx, vy = table.unpack(v)
+        vx, vy = unpack(v)
         if not vx then
             return data
         end
