@@ -40,9 +40,27 @@ local Grid = require('grid')
 
 # Interface
 
-**`Grid(x, y, [default_value])`**
-Create new Grid object
+## Note
+All examples containing the `grid` value will always be equal to:
+```lua
+local grid = Grid(3, 3, "-")
+grid:set_cells({
+    {1, 1, "A"}, {2, 1, "B"}, {3, 1, "C"},
+    {1, 2, "D"}, {2, 2, "E"}, {3, 2, "F"},
+    {1, 3, "G"}, {2, 3, "H"}, {3, 3, "I"}
+})
+```
 
+---
+**`Grid(x, y, [default])`**
+Create new Grid object
+```lua
+local grid = Grid(3, 3, "-")
+```
+or
+```lua
+local grid = Grid:new(3, 3, "-")
+```
 Arguments:
 * `x` `(number)` - Grid width
 * `y` `(number)` - Grid height
@@ -54,28 +72,32 @@ Returns:
 ---
 **`:get_size()`**
 Gets grid width and height
-
+```lua
+grid:get_size() -> 3, 3
+```
 Returns:
 * `(number)` - Grid width
 * `(number)` - Grid height
 ---
 **`:iterate()`**
 Iterator to traverse all cells from Grid 
-
+```lua
+for x, y, v in grid:iterate() do
+    print(x, y, v)
+end
+```
 Returns:
 * `(number)` - X position of cell
 * `(number)` - Y position of cell
 * `(any)` - Cell's data
 ---
-**`:get_default()`**
-Get default value of cells, that was passed in constructor
-
-Returns:
-* `(any)` - Default value
----
 **`:iterate_neighbor(x, y)`**
-Iterator to traverce all neighbors of given cell
-
+Iterator to traverse all neighbors of given cell
+```lua
+for x, y, z in grid:iterate_neighbor(2, 2) do
+    print(x, y, z)
+end
+```
 Arguments:
 * `x` `(number)` - X position of cell
 * `y` `(number)` - Y position of cell
@@ -85,9 +107,19 @@ Returns:
 * `(number)` - Delta-Y position of given cell (-1, 0, 1)
 * `(any)` - Neighbor cell's data
 ---
+**`:get_default()`**
+Get default value of cells, that was passed in constructor
+```lua
+grid:get_default() -> "-"
+```
+Returns:
+* `(any)` - Default value
+---
 **`:is_valid(x, y)`**
 Checks to see if a given cell is within the grid.
-
+```lua
+grid:is_valid(1, 1) -> true
+```
 Arguments:
 * `x` `(number)` - X position of cell
 * `y` `(number)` - Y position of cell
@@ -97,7 +129,9 @@ Returns:
 ---
 **`:get_cell(x, y)`**
 Gets the cell's data.
-
+```lua
+grid:get_cell(1, 1) -> "A"
+```
 Arguments:
 * `x` `(number)` - X position of cell
 * `y` `(number)` - Y position of cell
@@ -106,8 +140,10 @@ Returns:
 * `(any)` - Cell's data
 ---
 **`:get_cells(cells)`**
-Gets a set of data for x,y pairs in table 'cells'.
-
+Gets a set of data for x, y pairs in table 'cells'.
+```lua
+grid:get_cells({{1, 1}, {2, 2}}) -> { "A", "E" }
+```
 Arguments:
 * `cells` `(table)` - Table of cells position pairs `{{1, 1}, {2, 2}, ...}`
 
@@ -116,7 +152,9 @@ Returns:
 ---
 **`:set_cell(x, y, obj)`**
 Sets the cell's data to the given object.
-
+```lua
+grid:set_cell(1, 1, "A")
+```
 Arguments:
 * `x` `(number)` - X position of cell
 * `y` `(number)` - Y position of cell
@@ -124,7 +162,9 @@ Arguments:
 ---
 **`:reset_cell(x, y)`**
 Resets the cell to the default data.
-
+```lua
+grid:reset_cell(1, 1)
+```
 Arguments:
 * `x` `(number)` - X position of cell
 * `y` `(number)` - Y position of cell
@@ -132,18 +172,24 @@ Arguments:
 ---
 **`:reset_all()`**
 Resets the entire grid to the default data.
-
+```lua
+grid:reset_all()
+```
 ---
 **`:populate(data)`**
 Given a data-filled table, will set multiple cells.
-
+```lua
+grid:populate({{1, 1, "A2"}, {2, 2, "E2"}})
+```
 Arguments:
 * `data` `(table)` - Table of new cells data `{{1, 1, "A"}, {2, 2, "B"}, ...}`
 
 ---
 **`:get_contents([no_default])`**
 Returns a flat table of data suitable for `:populate()`
-
+```lua
+grid:get_contents(true) -> { {1, 1, "A"}, {2, 1, "B"}, ... }
+```
 Arguments:
 * `no_default` `(boolean)` - If the argument is `true`, then the returned data table only contains elements who's cells are not the default value. Defaults to `false`
 
@@ -152,12 +198,14 @@ Returns:
 
 ---
 **`:get_neighbor(x, y, vector)`**
-Gets a x,y's neighbor in vector direction.
-
+Gets a x, y's neighbor in vector direction.
+```lua
+grid:get_neighbor(2, 2, {-1, -1}) -> "A"
+```
 Arguments:
 * `x` `(number)` - X position of cell
 * `y` `(number)` - Y position of cell
-* `vector` `(table)` - The table of normalized vector like {-1, -1}. Also, you can pass `Grid.direction.` data
+* `vector` `(table)` - The table of normalized vector like `{-1, -1}`. Also, you can pass `Grid.direction` data
 
 Returns:
 * `(any)` - Cell's data
@@ -165,7 +213,9 @@ Returns:
 ---
 **`:get_neighbors(x, y)`**
 Returns a table of the given's cell's all neighbors.
-
+```lua
+grid:get_neighbors(2, 2) -> { {1, 1, "A"}, {1, 2, "B"}, ... }
+```
 Arguments:
 * `x` `(number)` - X position of cell
 * `y` `(number)` - Y position of cell
@@ -176,7 +226,9 @@ Returns:
 ---
 **`:resize(newx, newy)`**
 Resizes the grid. Can lose data if new grid is smaller.
-
+```lua
+grid:resize(5, 5)
+```
 Arguments:
 * `newx` `(number)` - New Grid width
 * `newy` `(number)` - New Grid height
@@ -184,7 +236,9 @@ Arguments:
 ---
 **`:get_row(x)`**
 Gets the row for the given x value.
-
+```lua
+grid:get_row(1) -> { "A", "B", "C" }
+```
 Arguments:
 * `x` `(number)` - The row number
 
@@ -194,7 +248,9 @@ Returns:
 ---
 **`:get_column(y)`**
 Gets the column for the given y value
-
+```lua
+grid:get_column(1) -> { "A", "D", "G" }
+```
 Arguments:
 * `y` `(number)` - The column number
 
@@ -203,7 +259,17 @@ Returns:
 
 ---
 **`:traverse(x, y, vector)`**
-Returns all cells start at x,y in vector direction.
+Returns all cells start at x, y in vector direction
+```lua
+grid:traverse(1, 1, {1, 1}) -> { {2, 2, "E"}, {3, 3, "I"} }
+```
+Arguments:
+*  `x` `(number)` -
+*  `y` `(number)` -
+* `vector` `(table)` - The table of normalized vector like `{-1, -1}`. Also, you can pass `Grid.direction` data
+
+Returns:
+* `(table)` - Table of cell's data `{{(number), (number), (any)}, {(number), (number), (any)}, ...}` 
 
 # Testing
 Install busted & luacheck `luarocks install busted && luarocks install luacheck` and run:
