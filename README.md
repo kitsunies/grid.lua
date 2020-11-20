@@ -1,4 +1,11 @@
 <h1 align=center>grid.lua</h1>
+
+<p align="center">
+    <a href="https://travis-ci.org/kitsunies/grid.lua"> <img src="https://travis-ci.org/kitsunies/grid.lua.svg?branch=master"> </a>
+    <a href="https://codecov.io/gh/kitsunies/grid.lua"> <img src="https://codecov.io/gh/kitsunies/grid.lua/branch/master/graph/badge.svg?token=UVolOT9zXu"/> </a>
+    <a href="https://github.com/kitsunies/emoji.lua/releases/latest"> <img src="https://img.shields.io/github/v/release/kitsunies/grid.lua"> </a>
+</p>
+
 <h3 align=center>An abstract grid class for Lua 📔</h3>
 
 # Example
