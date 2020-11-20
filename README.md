@@ -36,14 +36,6 @@ local Grid = require('grid')
 **`Grid(x, y, [default_value])`**
 Create new Grid object
 
-```lua
-local grid = Grid(10, 5, "X") -> grid
-```
-or
-```lua
-local grid = Grid:new(10, 5, "X") -> grid
-```
-
 Arguments:
 * `x` `(number)` - Grid width
 * `y` `(number)` - Grid height
@@ -56,27 +48,21 @@ Returns:
 **`:get_size()`**
 Gets grid width and height
 
-```lua
-local width, height = Grid(10, 2):get_size()
-```
 Returns:
 * `(number)` - Grid width
 * `(number)` - Grid height
 ---
 **`:iterate()`**
 Iterator to traverse all cells from Grid 
-```lua
-for x, y, cell in grid:iterate() do
-    print(x, y, cell)
-end
-```
+
 Returns:
 * `(number)` - X position of cell
 * `(number)` - Y position of cell
 * `(any)` - Cell's data
 ---
-**`:get_default_value()`**
+**`:get_default()`**
 Get default value of cells, that was passed in constructor
+
 Returns:
 * `(any)` - Default value
 ---

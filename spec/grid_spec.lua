@@ -9,7 +9,8 @@ describe("Grid", function()
         end)
 
         it("with gefault size", function()
-            assert.has_error(function() Grid() end, "Grid.new: size_x and size_y must be a number values equal or greater than 1")
+            assert.has_error(function() Grid() end, "Grid.new: size_x and size_y must be a number values equal or greater than 1"
+            )
         end)
 
         it("with custom size", function()
@@ -23,101 +24,101 @@ describe("Grid", function()
         it("with default data nil", function()
             local g = Grid(10, 10)
             assert.are.equal(g:get_cell(2, 2), nil)
-            assert.are.equal(g:get_default_value(), nil)
+            assert.are.equal(g:get_default(), nil)
         end)
 
         it("with custom default data", function()
             local g = Grid(10, 10, "some")
             assert.are.equal(g:get_cell(2, 2), "some")
-            assert.are.equal(g:get_default_value(), "some")
+            assert.are.equal(g:get_default(), "some")
         end)
     end)
 
     describe("Grid lock", function()
-        local test_grid
+        local g
 
         setup(function()
-            test_grid = Grid(30, 10, "T")
+            g = Grid(30, 10, "T")
         end)
 
         teardown(function()
-            test_grid = nil
+            g = nil
         end)
 
         it("lock", function()
-            test_grid.lock()
-            assert.has_error(test_grid:set_cell(11, 9, "DATA"))
-            assert.are.same(true, test_grid._locked)
+            g:lock()
+            assert.has_error(function() g:set_cell(11, 9) end, "Grid is locked, execute Grid.unlock to unlock")
+            assert.are.same(true, g._locked)
         end)
 
         it("unlock", function()
-            test_grid.unlock()
-            test_grid:set_cell(11, 9, "DATA")
-            assert.are.equal(test_grid:get_cell(11, 9), "DATA")
-            assert.are.same(false, test_grid._locked)
+            g:unlock()
+            g:set_cell(11, 9, "DATA")
+            assert.are.equal(g:get_cell(11, 9), "DATA")
+            assert.are.same(false, g._locked)
         end)
     end)
 
     describe("Cell validation", function()
-        local test_grid
+        local g
 
         setup(function()
-            test_grid = Grid(30, 10)
+            g = Grid(30, 10)
         end)
 
         teardown(function()
-            test_grid = nil
+            g = nil
         end)
 
         it("valid cells", function()
-            assert.is.True(test_grid:is_valid(1, 1))
-            assert.is.True(test_grid:is_valid(1, 10))
-            assert.is.True(test_grid:is_valid(30, 10))
-            assert.is.True(test_grid:is_valid(30, 1))
+            assert.is.True(g:is_valid(1, 1))
+            assert.is.True(g:is_valid(1, 10))
+            assert.is.True(g:is_valid(30, 10))
+            assert.is.True(g:is_valid(30, 1))
         end)
 
         it("not valid cells", function()
-            assert.is.False(test_grid:is_valid(0, 0))
-            assert.is.False(test_grid:is_valid(30, 11))
-            assert.is.False(test_grid:is_valid(31, 10))
+            assert.is.False(g:is_valid(0, 0))
+            assert.is.False(g:is_valid(30, 11))
+            assert.is.False(g:is_valid(31, 10))
         end)
 
         it("error parameters", function()
-            assert.is.False(test_grid:is_valid())
-            assert.is.False(test_grid:is_valid("a", "b"))
+            assert.is.False(g:is_valid())
+            assert.is.False(g:is_valid("a", "b"))
         end)
     end)
 
     describe("Get cell", function()
-        local test_grid
+        local g
 
         setup(function()
-            test_grid = Grid(30, 10, "T")
+            g = Grid(30, 10, "T")
         end)
 
         teardown(function()
-            test_grid = nil
+            g = nil
         end)
 
         it("get valid cell", function()
-            local data = test_grid:get_cell(6, 8)
+            local data = g:get_cell(6, 8)
             assert.are.equal(data, "T")
         end)
 
         it("get invalid cell", function()
-            assert.has_error(function()test_grid:get_cell("a", "b") end, "Grid.get_cell: try to get cell by invalid index [ a : b ]")
+            assert.has_error(function() g:get_cell("a", "b") end, "Grid.get_cell: try to get cell by invalid index [ a : b ]")
         end)
     end)
 
     describe("Get cells", function()
-        local test_grid
+        local g
 
         setup(function()
-            test_grid = Grid(30, 10, "T")
+            g = Grid(30, 10, "T")
         end)
 
         teardown(function()
-            test_grid = nil
+            g = nil
         end)
 
         it("valid cells table", function()
@@ -126,25 +127,25 @@ describe("Grid", function()
                 {20, 6}
             }
 
-            local data_table = test_grid:get_cells(cells_table)
+            local data_table = g:get_cells(cells_table)
             assert.is.Table(data_table)
         end)
     end)
 
     describe("Set cell", function()
-        local test_grid
+        local g
 
         setup(function()
-            test_grid = Grid(30, 10, "T")
+            g = Grid(30, 10, "T")
         end)
 
         teardown(function()
-            test_grid = nil
+            g = nil
         end)
 
         it("set data in cell", function()
-            test_grid:set_cell(11, 9, "NEW")
-            assert.are.equal(test_grid:get_cell(11, 9), "NEW")
+            g:set_cell(11, 9, "NEW")
+            assert.are.equal(g:get_cell(11, 9), "NEW")
         end)
     end)
 
@@ -153,7 +154,7 @@ describe("Grid", function()
             local g = Grid(10, 5)
             g:set_cell(2, 3, "DATA")
             g:reset_cell(2, 3)
-            assert.are.equal(g:get_cell(2, 3), g:get_default_value())
+            assert.are.equal(g:get_cell(2, 3), g:get_default())
         end)
 
         it("valid cell to custom value", function()
@@ -165,7 +166,8 @@ describe("Grid", function()
 
         it("try to reset invalid cell", function()
             local g = Grid(10, 5, "T")
-            assert.has_error(function() g:reset_cell(100, 100) end, "Grid.reset_cell: try to reset cell by invalid index [ 100 : 100 ]")
+            assert.has_error(function() g:reset_cell(100, 100) end, "Grid.reset_cell: try to reset cell by invalid index [ 100 : 100 ]"
+            )
         end)
     end)
 
@@ -174,7 +176,7 @@ describe("Grid", function()
             local g = Grid(17, 73)
             g:set_cell(11, 11, "Some")
             g:reset_all()
-            assert.are.equal(g:get_cell(11, 11), g:get_default_value())
+            assert.are.equal(g:get_cell(11, 11), g:get_default())
         end)
 
         it("to custom value", function()
@@ -212,7 +214,8 @@ describe("Grid", function()
 
         it("data is not table", function()
             local g = Grid(10, 10, "Data")
-            assert.has_error(function() g:populate("aaaaa") end, "Grid.populate: invalid input data - must be a table value, but actual string")
+            assert.has_error(function() g:populate("aaaaa") end, "Grid.populate: invalid input data - must be a table value, but actual string"
+            )
         end)
     end)
 
@@ -327,7 +330,8 @@ describe("Grid", function()
 
         it("invalid size", function()
             local gr = Grid(5, 5)
-            assert.has_error(function() gr:resize("a", "b") end, "Grid.resize: size_x and size_y must be a number values equal or greater than 1")
+            assert.has_error(function() gr:resize("a", "b") end, "Grid.resize: size_x and size_y must be a number values equal or greater than 1"
+            )
         end)
     end)
 
@@ -341,17 +345,20 @@ describe("Grid", function()
 
         it("row index is not number", function()
             local gr = Grid(4, 3, "A")
-            assert.has_error(function() gr:get_row("a") end, "Grid.get_row: invalid row index a")
+            assert.has_error(function() gr:get_row("a") end, "Grid.get_row: invalid row index a"
+            )
         end)
 
         it("row index less then grid size", function()
             local gr = Grid(4, 3, "A")
-            assert.has_error(function() gr:get_row(0) end, "Grid.get_row: invalid row index 0")
+            assert.has_error(function() gr:get_row(0) end, "Grid.get_row: invalid row index 0"
+            )
         end)
 
         it("row index more then grid size", function()
             local gr = Grid(4, 6, "A")
-            assert.has_error(function() gr:get_row(7) end, "Grid.get_row: invalid row index 7")
+            assert.has_error(function() gr:get_row(7) end, "Grid.get_row: invalid row index 7"
+            )
         end)
     end)
 
@@ -365,17 +372,20 @@ describe("Grid", function()
 
         it("column index is not number", function()
             local gr = Grid(4, 3, "A")
-            assert.has_error(function() gr:get_column("a") end, "Grid.get_column: invalid column index a")
+            assert.has_error(function() gr:get_column("a") end, "Grid.get_column: invalid column index a"
+            )
         end)
 
         it("column index less then grid size", function()
             local gr = Grid(4, 3, "A")
-            assert.has_error(function() gr:get_column(0) end, "Grid.get_column: invalid column index 0")
+            assert.has_error(function() gr:get_column(0) end, "Grid.get_column: invalid column index 0"
+            )
         end)
 
         it("column index more then grid size", function()
             local gr = Grid(4, 6, "A")
-            assert.has_error(function() gr:get_column(7) end, "Grid.get_column: invalid column index 7")
+            assert.has_error(function() gr:get_column(7) end, "Grid.get_column: invalid column index 7"
+            )
         end)
     end)
 

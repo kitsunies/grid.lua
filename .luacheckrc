@@ -1,1 +1,1 @@
-max_line_length = 150
+max_line_length = 200
