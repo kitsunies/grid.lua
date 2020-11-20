@@ -4,7 +4,7 @@ describe("Grid", function()
 
     describe("Initialize", function()
         it("call 'new' method", function()
-            local gr = Grid:new(10, 20)
+            local g = Grid:new(10, 20)
             assert.is.Table(gr)
         end)
 
@@ -45,16 +45,16 @@ describe("Grid", function()
             g = nil
         end)
 
-        it("lock", function()
+        it("Lock grid", function()
             g:lock()
-            assert.has_error(function() g:set_cell(11, 9) end, "Grid is locked, execute Grid.unlock to unlock")
+            assert.has_error(function() g:set_cell(10, 10) end, "Grid is locked, execute Grid.unlock to unlock")
+            assert.has_error(function() g:resize(20, 20) end, "Grid is locked, execute Grid.unlock to unlock")
             assert.are.same(true, g._locked)
         end)
 
-        it("unlock", function()
+        it("Unlock grid", function()
             g:unlock()
-            g:set_cell(11, 9, "DATA")
-            assert.are.equal(g:get_cell(11, 9), "DATA")
+            assert.are.equal(g:get_cell(10, 10), "T")
             assert.are.same(false, g._locked)
         end)
     end)
@@ -130,6 +130,18 @@ describe("Grid", function()
             local data_table = g:get_cells(cells_table)
             assert.is.Table(data_table)
         end)
+
+        it("invalid cell index", function()
+            local cells_table = {
+                {1, 1},
+                {100, 100}
+            }
+            assert.has_error(function() g:get_cell(cells_table) end, "Grid.get_cells: try to get cell by invalid index [ 100 : 100 ]")
+        end)
+
+        it("data is not table", function()
+            assert.has_error(function() g:get_cells('aaaaa') end, "Grid.get_cells: invalid cells data - must be a table value, but actual is string")
+        end)
     end)
 
     describe("Set cell", function()
@@ -146,6 +158,10 @@ describe("Grid", function()
         it("set data in cell", function()
             g:set_cell(11, 9, "NEW")
             assert.are.equal(g:get_cell(11, 9), "NEW")
+        end)
+
+        it("set data in invalid cell", function()
+            assert.has_error(function() g:set_cell(100, 100) end, "Grid.set_cell: try to set cell by invalid index [ 100 : 100 ]")
         end)
     end)
 
@@ -220,20 +236,20 @@ describe("Grid", function()
     end)
 
     describe("Get contents", function()
-        local gr
+        local g
 
         setup(function()
-            gr = Grid(2, 2)
-            gr:set_cell(1, 1, "A")
-            gr:set_cell(2, 2, "B")
+            g = Grid(2, 2)
+            g:set_cell(1, 1, "A")
+            g:set_cell(2, 2, "B")
         end)
 
         teardown(function()
-            gr = nil
+            g = nil
         end)
 
         it("all grid data", function()
-            local res = gr:get_contents()
+            local res = g:get_contents()
             assert.is.Table(res)
             assert.is.equal(#res, 4)
 
@@ -251,7 +267,7 @@ describe("Grid", function()
         end)
 
         it("only no default data", function()
-            local res = gr:get_contents(true)
+            local res = g:get_contents(true)
             assert.is.Table(res)
             assert.is.equal(#res, 2)
 
@@ -264,32 +280,32 @@ describe("Grid", function()
     end)
 
     describe("Get neighbor", function()
-        local gr
+        local g
 
         setup(function()
-            gr = Grid(3, 3, "Base")
-            gr:set_cell(1, 1, "A")
-            gr:set_cell(2, 1, "B")
-            gr:set_cell(3, 1, "C")
-            gr:set_cell(1, 2, "D")
-            gr:set_cell(2, 2, "E")
-            gr:set_cell(3, 2, "F")
-            gr:set_cell(1, 3, "G")
-            gr:set_cell(2, 3, "H")
-            gr:set_cell(3, 3, "I")
+            g = Grid(3, 3, "Base")
+            g:set_cell(1, 1, "A")
+            g:set_cell(2, 1, "B")
+            g:set_cell(3, 1, "C")
+            g:set_cell(1, 2, "D")
+            g:set_cell(2, 2, "E")
+            g:set_cell(3, 2, "F")
+            g:set_cell(1, 3, "G")
+            g:set_cell(2, 3, "H")
+            g:set_cell(3, 3, "I")
         end)
 
         teardown(function()
-            gr = nil
+            g = nil
         end)
 
         it("top left", function()
-            local res = gr:get_neighbor(2, 2, Grid.direction.top_left)
+            local res = g:get_neighbor(2, 2, Grid.direction.top_left)
             assert.is.equal(res, "A")
         end)
 
         it("not valid cell", function()
-            local res = gr:get_neighbor(1, 1, Grid.direction.top)
+            local res = g:get_neighbor(1, 1, Grid.direction.top)
             assert.is.Nil(res)
         end)
     end)
@@ -311,95 +327,116 @@ describe("Grid", function()
         end)
     end)
 
+    describe("Iterate neighbor", function()
+        it("valid neighbor iteration", function()
+            local g = Grid(5, 5, "A")
+            for x, y, v in g:iterate_neighbor(3, 3) do
+                assert.are_not.Nil(tostring(x):match('-?[01]'))
+                assert.are_not.NIl(tostring(y):match('-?[01]'))
+                assert.is.Nil(v)
+            end
+        end)
+
+        it("invalid base cell", function()
+            local g = Grid(10, 10, "A")
+            assert.has_error(function() for _ in g:iterate_neighbor(20, 20) do end end, "Grid.iterate_neighbor: try to iterate around invalid cell index [ 20 : 20 ]")
+        end) 
+    end)
+
     describe("Resize", function()
         it("bigger size", function()
-            local gr = Grid(2, 2)
-            gr:resize(3, 3)
-            local size_x, size_y = gr:get_size()
+            local g = Grid(2, 2)
+            g:resize(3, 3)
+            local size_x, size_y = g:get_size()
             assert.is.equal(size_x, 3)
             assert.is.equal(size_y, 3)
         end)
 
         it("lesser size", function()
-            local gr = Grid(5, 5)
-            gr:resize(2, 2)
-            local size_x, size_y = gr:get_size()
+            local g = Grid(5, 5)
+            g:resize(2, 2)
+            local size_x, size_y = g:get_size()
             assert.is.equal(size_x, 2)
             assert.is.equal(size_y, 2)
         end)
 
         it("invalid size", function()
-            local gr = Grid(5, 5)
-            assert.has_error(function() gr:resize("a", "b") end, "Grid.resize: size_x and size_y must be a number values equal or greater than 1"
+            local g = Grid(5, 5)
+            assert.has_error(function() g:resize("a", "b") end, "Grid.resize: size_x and size_y must be a number values equal or greater than 1"
             )
         end)
     end)
 
     describe("Get row", function()
         it("valid row", function()
-            local gr = Grid(4, 3, "A")
-            local res = gr:get_row(1)
+            local g = Grid(4, 3, "A")
+            local res = g:get_row(1)
             assert.is.Table(res)
             assert.are.same(res, {"A", "A", "A", "A"})
         end)
 
         it("row index is not number", function()
-            local gr = Grid(4, 3, "A")
-            assert.has_error(function() gr:get_row("a") end, "Grid.get_row: invalid row index a"
+            local g = Grid(4, 3, "A")
+            assert.has_error(function() g:get_row("a") end, "Grid.get_row: invalid row index a"
             )
         end)
 
         it("row index less then grid size", function()
-            local gr = Grid(4, 3, "A")
-            assert.has_error(function() gr:get_row(0) end, "Grid.get_row: invalid row index 0"
+            local g = Grid(4, 3, "A")
+            assert.has_error(function() g:get_row(0) end, "Grid.get_row: invalid row index 0"
             )
         end)
 
         it("row index more then grid size", function()
-            local gr = Grid(4, 6, "A")
-            assert.has_error(function() gr:get_row(7) end, "Grid.get_row: invalid row index 7"
+            local g = Grid(4, 6, "A")
+            assert.has_error(function() g:get_row(7) end, "Grid.get_row: invalid row index 7"
             )
         end)
     end)
 
     describe("Get column", function()
         it("valid column", function()
-            local gr = Grid(2, 3, "A")
-            local res = gr:get_column(1)
+            local g = Grid(2, 3, "A")
+            local res = g:get_column(1)
             assert.is.Table(res)
             assert.are.same(res, {"A", "A", "A"})
         end)
 
         it("column index is not number", function()
-            local gr = Grid(4, 3, "A")
-            assert.has_error(function() gr:get_column("a") end, "Grid.get_column: invalid column index a"
+            local g = Grid(4, 3, "A")
+            assert.has_error(function() g:get_column("a") end, "Grid.get_column: invalid column index a"
             )
         end)
 
         it("column index less then grid size", function()
-            local gr = Grid(4, 3, "A")
-            assert.has_error(function() gr:get_column(0) end, "Grid.get_column: invalid column index 0"
+            local g = Grid(4, 3, "A")
+            assert.has_error(function() g:get_column(0) end, "Grid.get_column: invalid column index 0"
             )
         end)
 
         it("column index more then grid size", function()
-            local gr = Grid(4, 6, "A")
-            assert.has_error(function() gr:get_column(7) end, "Grid.get_column: invalid column index 7"
+            local g = Grid(4, 6, "A")
+            assert.has_error(function() g:get_column(7) end, "Grid.get_column: invalid column index 7"
             )
         end)
     end)
 
     describe("Traverse", function()
         it("valid vector", function()
-            local gr = Grid(2, 2, "B")
-            local res = gr:traverse(2, 1, Grid.direction.bottom_left)
+            local g = Grid(2, 2, "B")
+            local res = g:traverse(2, 1, Grid.direction.bottom_left)
             assert.is.Table(res)
             assert.are.same(res, {{1, 2, "B"}})
         end)
 
+        it("invalid vector", function()
+            local g = Grid(2, 2)
+            assert.are.equal(function() g:traverse(2, 1, {}) end, {})
+        end)
+
         it("invalid base cell", function()
-            local gr = Grid(2, 2, "B")
-            local res = gr:traverse(0, 0, Grid.direction.bottom_left)
+            local g = Grid(2, 2, "B")
+            local res = g:traverse(0, 0, Grid.direction.bottom_left)
             assert.is.Nil(res)
         end)
     end)
