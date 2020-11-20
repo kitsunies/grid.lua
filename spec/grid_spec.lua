@@ -9,9 +9,7 @@ describe("Grid", function()
         end)
 
         it("with gefault size", function()
-            assert.has_error(
-                function() Grid() end, 
-                "Grid.new: size_x and size_y must be a number values equal or greater than 1"
+            assert.has_error(function() Grid() end, "Grid.new: size_x and size_y must be a number values equal or greater than 1"
             )
         end)
 
@@ -49,7 +47,7 @@ describe("Grid", function()
 
         it("lock", function()
             g:lock()
-            assert.has_error(g:set_cell(11, 9, "DATA"))
+            assert.has_error(g:set_cell(11, 9, "DATA"), "Grid is locked, execute Grid.unlock to unlock")
             assert.are.same(true, g._locked)
         end)
 
@@ -108,10 +106,7 @@ describe("Grid", function()
         end)
 
         it("get invalid cell", function()
-            assert.has_error(
-                function() g:get_cell("a", "b") end, 
-                "Grid.get_cell: try to get cell by invalid index [ a : b ]"
-            )
+            assert.has_error(function() g:get_cell("a", "b") end, "Grid.get_cell: try to get cell by invalid index [ a : b ]")
         end)
     end)
 
@@ -171,9 +166,7 @@ describe("Grid", function()
 
         it("try to reset invalid cell", function()
             local g = Grid(10, 5, "T")
-            assert.has_error(
-                function() g:reset_cell(100, 100) end, 
-                "Grid.reset_cell: try to reset cell by invalid index [ 100 : 100 ]"
+            assert.has_error(function() g:reset_cell(100, 100) end, "Grid.reset_cell: try to reset cell by invalid index [ 100 : 100 ]"
             )
         end)
     end)
@@ -221,9 +214,7 @@ describe("Grid", function()
 
         it("data is not table", function()
             local g = Grid(10, 10, "Data")
-            assert.has_error(
-                function() g:populate("aaaaa") end, 
-                "Grid.populate: invalid input data - must be a table value, but actual string"
+            assert.has_error(function() g:populate("aaaaa") end, "Grid.populate: invalid input data - must be a table value, but actual string"
             )
         end)
     end)
@@ -339,9 +330,7 @@ describe("Grid", function()
 
         it("invalid size", function()
             local gr = Grid(5, 5)
-            assert.has_error(
-                function() gr:resize("a", "b") end, 
-                "Grid.resize: size_x and size_y must be a number values equal or greater than 1"
+            assert.has_error(function() gr:resize("a", "b") end, "Grid.resize: size_x and size_y must be a number values equal or greater than 1"
             )
         end)
     end)
@@ -356,25 +345,19 @@ describe("Grid", function()
 
         it("row index is not number", function()
             local gr = Grid(4, 3, "A")
-            assert.has_error(
-                function() gr:get_row("a") end, 
-                "Grid.get_row: invalid row index a"
+            assert.has_error(function() gr:get_row("a") end, "Grid.get_row: invalid row index a"
             )
         end)
 
         it("row index less then grid size", function()
             local gr = Grid(4, 3, "A")
-            assert.has_error(
-                function() gr:get_row(0) end, 
-                "Grid.get_row: invalid row index 0"
+            assert.has_error(function() gr:get_row(0) end, "Grid.get_row: invalid row index 0"
             )
         end)
 
         it("row index more then grid size", function()
             local gr = Grid(4, 6, "A")
-            assert.has_error(
-                function() gr:get_row(7) end, 
-                "Grid.get_row: invalid row index 7"
+            assert.has_error(function() gr:get_row(7) end, "Grid.get_row: invalid row index 7"
             )
         end)
     end)
@@ -389,25 +372,19 @@ describe("Grid", function()
 
         it("column index is not number", function()
             local gr = Grid(4, 3, "A")
-            assert.has_error(
-                function() gr:get_column("a") end, 
-                "Grid.get_column: invalid column index a"
+            assert.has_error(function() gr:get_column("a") end, "Grid.get_column: invalid column index a"
             )
         end)
 
         it("column index less then grid size", function()
             local gr = Grid(4, 3, "A")
-            assert.has_error(
-                function() gr:get_column(0) end, 
-                "Grid.get_column: invalid column index 0"
+            assert.has_error(function() gr:get_column(0) end, "Grid.get_column: invalid column index 0"
             )
         end)
 
         it("column index more then grid size", function()
             local gr = Grid(4, 6, "A")
-            assert.has_error(
-                function() gr:get_column(7) end, 
-                "Grid.get_column: invalid column index 7"
+            assert.has_error(function() gr:get_column(7) end, "Grid.get_column: invalid column index 7"
             )
         end)
     end)
