@@ -33,7 +33,7 @@ end
 function Grid:lock()
     self._locked = true
 end
- 
+
 function Grid:unlock()
     self._locked = false
 end
@@ -65,8 +65,7 @@ end
 
 function Grid:iterate_neighbor(x, y)
     if not self:is_valid(x, y) then
-        error('Grid.iterate_neighbor: try to iterate around invalid cell index' 
-            ..' [ '..tostring(x)..' : '..tostring(y)..' ]')
+        error('Grid.iterate_neighbor: try to iterate around invalid cell index [ '..tostring(x)..' : '..tostring(y)..' ]')
     end
     local iterate_table = {}
     for _, v in pairs(Grid.direction) do
