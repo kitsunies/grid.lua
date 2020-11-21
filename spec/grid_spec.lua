@@ -5,7 +5,7 @@ describe("Grid", function()
     describe("Initialize", function()
         it("call 'new' method", function()
             local g = Grid:new(10, 20)
-            assert.is.Table(gr)
+            assert.is.Table(g)
         end)
 
         it("with gefault size", function()
@@ -136,7 +136,7 @@ describe("Grid", function()
                 {1, 1},
                 {100, 100}
             }
-            assert.has_error(function() g:get_cell(cells_table) end, "Grid.get_cells: try to get cell by invalid index [ 100 : 100 ]")
+            assert.has_error(function() g:get_cells(cells_table) end, "Grid.get_cells: try to get cell by invalid index [ 100 : 100 ]")
         end)
 
         it("data is not table", function()
@@ -329,7 +329,7 @@ describe("Grid", function()
 
     describe("Iterate neighbor", function()
         it("valid neighbor iteration", function()
-            local g = Grid(5, 5, "A")
+            local g = Grid(5, 5)
             for x, y, v in g:iterate_neighbor(3, 3) do
                 assert.are_not.Nil(tostring(x):match('-?[01]'))
                 assert.are_not.NIl(tostring(y):match('-?[01]'))
@@ -340,7 +340,7 @@ describe("Grid", function()
         it("invalid base cell", function()
             local g = Grid(10, 10, "A")
             assert.has_error(function() for _ in g:iterate_neighbor(20, 20) do end end, "Grid.iterate_neighbor: try to iterate around invalid cell index [ 20 : 20 ]")
-        end) 
+        end)
     end)
 
     describe("Resize", function()
@@ -431,7 +431,9 @@ describe("Grid", function()
 
         it("invalid vector", function()
             local g = Grid(2, 2)
-            assert.are.equal(function() g:traverse(2, 1, {}) end, {})
+            local res = g:traverse(1, 1, {})
+            assert.is.Table(res)
+            assert.are.same(#res, 0)
         end)
 
         it("invalid base cell", function()
