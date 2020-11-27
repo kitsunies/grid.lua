@@ -264,8 +264,8 @@ Returns all cells start at x, y in vector direction
 grid:traverse(1, 1, {1, 1}) -> { {2, 2, "E"}, {3, 3, "I"} }
 ```
 Arguments:
-*  `x` `(number)` -
-*  `y` `(number)` -
+*  `x` `(number)` - The row number
+*  `y` `(number)` - The column number
 * `vector` `(table)` - The table of normalized vector like `{-1, -1}`. Also, you can pass `Grid.direction` data
 
 Returns:
